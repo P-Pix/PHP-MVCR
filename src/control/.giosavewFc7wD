@@ -14,9 +14,9 @@ class Controller {
     }
 
     public function create(Association $asso): void {
-        $id = $this->associationStorage->create($asso);
+        $id =$this->associationStorage->create($asso);
         if ($id == null) {
-            $this->displayAssociationCreationFailure();
+            $this->showListe();
         } else {
             $this->view->displayAssociationCreationSuccess($id);
         }
@@ -41,7 +41,7 @@ class Controller {
     }
 
     public function showCreation(): void {
-        $this->view->makeAssociationCreationPage();
+        $this->view->makeAnimalCreationPage();
         $this->view->render();
     }
 
@@ -60,37 +60,35 @@ class Controller {
         $this->view->render();
     }
 
+    /*
     public function showModifier(string $id): void {
-        $this->view->makeAssociationModificationPage($id);
+        $this->view->makeAnimalCreationPage($id);
         $this->view->render();
     }
+    */
 
-    public function makeModification(string $id, array $data): void {
-        $asso = new AssociationBuilder($data);
-        $asso = $asso->createAssociation();
-        if ($asso !== null) {
-            $this->associationStorage->update($id, $asso);
-            $this->view->displayAssociationModificationSuccess($id);
-            return;
-        }
-        $this->view->displayAssociationModificationFailure($id);
-    }
-
-    public function newAssociation(): void {
+    public function newAssociation(array $data): void {
+        $_SESSION["currentNewAssociation"] = new AssociationBuilder($data);
+        $this->saveNewAssociation();
         if (isset($_SESSION["currentNewAssociation"])) {
             $asso = $_SESSION["currentNewAssociation"]->createAssociation();
             if ($asso != null) {
-                $this->create($asso);
+                $this->saveNewAssociation($asso);
             } else {
-                $this->displayAssociationCreationFailure();
+                $this->showCreation();
+                echo $_SESSION["currentNewAssociation"]->getError();
             }
         } else {
             $this->showCreation();
         }
     }
-    
-    public function saveNewAssociation(array $data): void {
-        $_SESSION["currentNewAssociation"] = new AssociationBuilder($data);
+
+    public function saveNewAssociation(Association $asso): void {
+        if (isset($_SESSION["currentNewAssociation"])) {
+            $this->create($_SESSION["currentNewAssociation"]);
+        } else {
+            $this->create($asso);
+        }
     }
 
     public function getAssociation(string $id): Association {

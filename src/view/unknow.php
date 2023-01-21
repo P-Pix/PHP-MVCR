@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Inconnu</title>
+    <title><?php echo $this->title ?></title>
 </head>
 <body>
 <h1><?php echo $this->title ?></h1>
-    <a href="index.php">Accueil</a>
-    <p>La rentrée est inconnue</p>
+    <a href="./association.php">Accueil</a>
+    <p><?php echo $this->content ?></p>
 </body>
 </html>

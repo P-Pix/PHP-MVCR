@@ -8,6 +8,26 @@ class AssociationStorageFile implements AssociationStorage {
     private array $associationTab;
 
     private function loadData(): void {
+        $this->associationTab = $this->db->fetchAll();
+    }
+
+    public function __construct() {
+        $this->db = new ObjectFileDB("/users/22007629/tmp/db");
+        $this->loadData();
+    }
+
+    public function read(string $id): ?Association {
+        if (isset($this->associationTab[$id])) {
+            return $this->associationTab[$id];
+        }
+        return null;
+    }
+
+    public function readAll(): array {
+        return $this->db->fetchAll();
+    }
+
+    public function reinit(): void {
         $this->associationTab = array(
             "CSC" => new Association("Corpo Sciences Caen", "étudiant en science de Caen", 1993),
             "FCBN" => new Association("Fédération Campus Basse Normandie", "association de Basse Normandie", 2012),
@@ -15,23 +35,26 @@ class AssociationStorageFile implements AssociationStorage {
         );
     }
 
-    public function __construct() {
-        //$this->db = new ObjectFileDB("/users/22007629/tmp");
-        $this->db = new ObjectFileDB("./base.json");
-        $this->loadData();
+    public function create(Association $association): ?string {
+        foreach ($this->associationTab as $asso) {
+            if ($asso->getName() === $association->getName()) {
+                if ($asso->getContent() === $association->getContent()) {
+                    if ($asso->getCreatedAt() === $association->getCreatedAt()) {
+                        return null;
+                    }
+                }
+            }
+        }
+        $id = $this->db->insert($association);
+        $this->associationTab[] = $id;
+        return $id;
     }
 
-    public function read(string $id): ?Association {
-        return $this->associationTab[$id];
+    public function update(string $id, Association $data): void {
+        $this->db->update($id, $data);
     }
 
-    public function readAll(): array {
-        return $this->associationTab;
+    public function delete(string $id): void {
+        $this->db->delete($id);
     }
-
-    public function reinit(): void {
-        $this->loadData();
-    }
-}
-
-?>
+};

@@ -246,7 +246,6 @@ class ObjectFileDB {
     public function deleteAll() {
         $this->file_store->saveData(array());
     }
-
 }
 
 ?>

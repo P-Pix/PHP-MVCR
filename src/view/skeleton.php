@@ -1,3 +1,7 @@
+<?php
+include_once ("src/Router.php");
+?>
+
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -6,7 +10,8 @@
 </head>
 <body>
 <h1><?php echo $this->title ?></h1>
-    <a href="association.php?">Accueil</a>
-    <p>La <?php echo $this->title?> est une association d'<?php echo $this->content?> elle a été créée en <?php echo $this->created_at ?></p>
+    <?php echo $this->makeNav();?>
+    <a href="<?php echo Router::getAssociationAskDeletionURL($_GET['id']) ?>">Supprimer</a>
+    <p>La <?php echo $this->title?> est connue sous le nom de : <?php echo $this->content?> elle a été créée en <?php echo $this->created_at ?></p>
 </body>
 </html>

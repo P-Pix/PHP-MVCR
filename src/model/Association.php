@@ -21,5 +21,4 @@ class Association {
     public function getCreatedAt() {
         return $this->created_at;
     }
-}
-?>
+};
